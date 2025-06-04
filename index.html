@@ -1,0 +1,257 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liceria & Co. - Web Consulting Packages & Pricing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://via.placeholder.com/1920x1080') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #00cc00;
+            margin-right: 0.5rem;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+        }
+
+        /* Pricing Section */
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pricing-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00cc00;
+            border-radius: 10px;
+            width: 300px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .pricing-card h2 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card .price {
+            font-size: 2.5rem;
+            color: #00cc00;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: white;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card ul li {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .pricing-card ul li:before {
+            content: "•";
+            color: #00cc00;
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        footer .left {
+            margin-left: 2rem;
+        }
+
+        footer .right {
+            margin-right: 2rem;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <h1>LICERIA & CO.</h1>
+            <p>123 Anywhere St, Any City</p>
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Service</a>
+            <a href="#">About Us</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <h1>Web Consulting Packages & Pricing</h1>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="pricing-container">
+        <!-- Basic Package -->
+        <div class="pricing-card">
+            <h2>Basic Consultation</h2>
+            <div class="price">$298 <span>/month</span></div>
+            <ul>
+                <li>1-Hour Consultation Session</li>
+                <li>Website Audit</li>
+                <li>Basic Recommendations Report</li>
+                <li>Follow-up Email Support</li>
+            </ul>
+        </div>
+
+        <!-- Standard Package -->
+        <div class="pricing-card">
+            <h2>Standard Consultation</h2>
+            <div class="price">$588 <span>/month</span></div>
+            <ul>
+                <li>2-Hour Consultation Session</li>
+                <li>Comprehensive Website Audit</li>
+                <li>Detailed Recommendations Report</li>
+                <li>1 Follow-up Session</li>
+                <li>Email and Phone Support</li>
+            </ul>
+        </div>
+
+        <!-- Advanced Package -->
+        <div class="pricing-card">
+            <h2>Advanced Consultation</h2>
+            <div class="price">$988 <span>/month</span></div>
+            <ul>
+                <li>4-Hour Consultation Session</li>
+                <li>In-Depth Website Audit and Analysis</li>
+                <li>Strategic Recommendations Report</li>
+                <li>2 Follow-up Sessions</li>
+                <li>Priority Email and Phone Support</li>
+                <li>Performance Tracking and Review</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="left">
+            <a href="#">Get Started</a>
+        </div>
+        <div class="right">
+            <p>123 Anywhere St, Any City | <a href="http://www.reallygreatsite.com">www.reallygreatsite.com</a> | +123-456-7890</p>
+        </div>
+    </footer>
+</body>
+</html>
