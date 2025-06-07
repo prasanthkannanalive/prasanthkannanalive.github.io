@@ -14,7 +14,6 @@
 <!-- MAIN STYLE -->
 <link rel="stylesheet" href="css/tooplate-style.css">
 <title>Payment Plans</title>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -167,8 +166,8 @@ body {
 <div id="paymentModal" class="modal">
   <div class="modal-content">
     <h3 class="text-dark">Select a Payment Method</h3>
-    <button class="payu-btn" onclick="payWithPayU()">Pay with PayU</button>
-    <button class="razorpay-btn" onclick="payWithRazorpay()">Pay with Razorpay</button>
+   <button class="payu-btn" onclick="window.open('about:blank')">Pay with PayU</button>
+    <button class="razorpay-btn" onclick="window.open('about:blank')">Pay with Razorpay</button>
     <button class="close-btn" onclick="closePaymentPopup()">Cancel</button>
   </div>
 </div>
